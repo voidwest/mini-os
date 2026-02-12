@@ -6,7 +6,7 @@ edition = "2024"
 [dependencies]
 
 [profile.dev]
-panic = "abort" 
+panic = "abort" # comments work
 
 [profile.release]
-panic = "abort"
+panic = "abort" # both aborts disable stack unwinding on panic
