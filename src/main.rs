@@ -4,6 +4,8 @@
 use core::panic::PanicInfo;
 
 
+static HELLO: &[u8] = b"Hello World!";
+
 // called on panic
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! { 
