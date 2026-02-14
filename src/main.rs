@@ -24,5 +24,4 @@ pub extern "C" fn _start() -> !{
     } // prints hello world! in BLUE
     loop {}
 }
-// qemu-system-x86_64 -drive format=raw,file=target/x86_64-mini-os/debug/bootimage-mini-os.bin 
-// this runs it
+// qemu-system-x86_64 -drive format=raw,file=target/x86_64-mini-os/debug/bootimage-mini-os.bin - irrelevant
