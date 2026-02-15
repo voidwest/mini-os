@@ -1,7 +1,7 @@
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
-
+struct ColorCode(u8);
 pub enum Color {
     Black = 0,
     Blue = 1,
