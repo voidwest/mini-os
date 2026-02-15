@@ -20,3 +20,9 @@ pub enum Color {
     Yellow = 14,
     White = 15,
 }
+
+impl ColorCode{
+    fn new(foreground: Color, background: Color) -> ColorCode{
+        ColorCode((background as u8) << 4 | (foreground as u8))
+    }
+}
