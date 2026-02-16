@@ -27,3 +27,9 @@ impl ColorCode{
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(C)]
+struct ScreenChar{
+    ascii_character: u8,
+    color_code: ColorCode,
+}
