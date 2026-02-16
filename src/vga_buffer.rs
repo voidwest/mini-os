@@ -47,3 +47,7 @@ pub struct Writer {
     color_code: ColorCode,
     buffer: &'static mut Buffer,
 }
+
+impl Writer{
+    
+}
