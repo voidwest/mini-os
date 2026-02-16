@@ -26,3 +26,4 @@ impl ColorCode{
         ColorCode((background as u8) << 4 | (foreground as u8))
     }
 }
+
