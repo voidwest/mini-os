@@ -34,6 +34,14 @@ struct ScreenChar{
     color_code: ColorCode,
 }
 
+const BUFFER_HEIGHT: usize = 25;
+const BUFFER_WIDTH: usize = 80;
+
+#[repr(transparent)]
+struct Buffer{
+    chars: [[ScreenChar; BUFFER_WIDTH]; BUFFER_HEIGHT],
+}
+
 pub struct Writer {
     column_position: usize,
     color_code: ColorCode,
