@@ -33,3 +33,9 @@ struct ScreenChar{
     ascii_character: u8,
     color_code: ColorCode,
 }
+
+pub struct Writer {
+    column_position: usize,
+    color_code: ColorCode,
+    buffer: &'static mut Buffer,
+}
