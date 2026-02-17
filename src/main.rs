@@ -4,7 +4,6 @@
 use core::panic::PanicInfo;
 mod vga_buffer;
 
-static HELLO: &[u8] = b"Hello World!";
 
 // called on panic
 #[panic_handler]
@@ -14,14 +13,8 @@ fn panic(_info: &PanicInfo) -> ! {
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> !{
-    let vga_buffer = 0xb8000 as *mut u8;
-
-    for (i, &byte) in HELLO.iter().enumerate(){
-        unsafe{
-            *vga_buffer.offset(i as isize * 2) = byte;
-            *vga_buffer.offset(i as isize * 2 + 1 ) = 0xb;
-        }
-    } // prints hello world! in BLUE
+    
     loop {}
 }
+
 // qemu-system-x86_64 -drive format=raw,file=target/x86_64-mini-os/debug/bootimage-mini-os.bin - irrelevant
