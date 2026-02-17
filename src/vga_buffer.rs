@@ -67,6 +67,10 @@ impl Writer{
 
         }
     }
+
+    pub fn write_string(&mut self, s: &str){
+        
+    }
     fn new_line(&mut self){
         //to doo
     }
