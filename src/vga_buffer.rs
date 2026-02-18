@@ -78,7 +78,7 @@ impl Writer{
         }
     }
     fn new_line(&mut self){
-        //to do
+        
     }
 
     fn clear_line(&mut self, row: usize){
