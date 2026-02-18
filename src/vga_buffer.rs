@@ -82,6 +82,11 @@ impl Writer{
     }
 }
 
+use core::fmt;
+impl fmt::Write for Writer{
+
+}
+
 pub fn print_smth(){
     use core::fmt::Write;
     let mut writer = Writer{
