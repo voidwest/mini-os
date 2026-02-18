@@ -84,9 +84,11 @@ impl Writer{
                 self.buffer.chars[row -1][col].write(character);
             }
         }
+        self.clear_row(BUFFER_HEIGHT - 1);
+        self.column_position = 0;
     }
 
-    fn clear_line(&mut self, row: usize){
+    fn clear_row(&mut self, row: usize){
 
     }
 }
