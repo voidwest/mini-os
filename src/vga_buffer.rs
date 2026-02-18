@@ -78,7 +78,7 @@ impl Writer{
         }
     }
     fn new_line(&mut self){
-        //to doo
+        //to do
     }
 }
 
