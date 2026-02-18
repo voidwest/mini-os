@@ -93,6 +93,9 @@ impl Writer{
             ascii_character: b' ',
             color_code: self.color_code,
         };
+        for col in 0..BUFFER_WIDTH {
+            self.buffer.chars[row][col].write(blank);
+        }
 
     }
 }
