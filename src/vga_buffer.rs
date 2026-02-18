@@ -83,6 +83,7 @@ impl Writer{
 }
 
 pub fn print_smth(){
+    use core::fmt::Write;
     let mut writer = Writer{
         column_position: 0,
         color_code: ColorCode::new(Color::Yellow, Color::Black),
