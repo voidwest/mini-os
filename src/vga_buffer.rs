@@ -99,6 +99,6 @@ pub fn print_smth(){
     };
 
     writer.write_byte(b'H');
-    writer.write_string("ello ");
-    writer.write_string("world!");
+    writer.write_string("ello! ");
+    write!(writer, "The numbers are {} and {}", 42, 1.0/3.0).unwrap();
 }
