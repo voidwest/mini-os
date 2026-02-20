@@ -118,10 +118,3 @@ use lazy_static::lazy_static;
         buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
     };
 }
-
-pub fn print_something() {
-    use core::fmt::Write;
-    
-    WRITER.write_byte(b'H');
-    WRITER.write_string("ello! ");
-}
