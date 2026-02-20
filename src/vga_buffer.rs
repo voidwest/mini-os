@@ -109,8 +109,7 @@ impl fmt::Write for Writer{
 }
 
 use lazy_static::lazy_static;
-
-
+use spin::Mutex;
    lazy_static! {
     pub static ref WRITER: Writer = Writer {
         column_position: 0,
