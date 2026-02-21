@@ -117,3 +117,9 @@ use spin::Mutex;
         buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
     });
 }
+
+#[macro_export]
+macro_rules! print {
+    ($($arg:tt)*) =>($crate::vga_buffer::_print(format_args!($($arg)*))); 
+        
+}
