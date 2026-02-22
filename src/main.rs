@@ -21,5 +21,8 @@ pub extern "C" fn _start() -> !{
 
 #[cfg(test)]
 pub fn test_runner(tests: &[&dyn Fn()]){
-    
+    println!("running {} tests", tests.len());
+    for test in tests{
+        test();
+    }
 }
