@@ -2,7 +2,7 @@
 #![no_std]
 #![no_main]
 #![feature(custom_test_frameworks)]
-
+#![test_runner(crate::test_runner)]
 use core::{fmt::write, panic::PanicInfo};
 mod vga_buffer;
 
@@ -19,3 +19,4 @@ pub extern "C" fn _start() -> !{
         loop {}
 }
 
+#[cfg(test)]
