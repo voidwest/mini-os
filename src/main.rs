@@ -1,6 +1,8 @@
 // main.rs
 #![no_std]
 #![no_main]
+#![feature(custom_test_frameworks)]
+
 use core::{fmt::write, panic::PanicInfo};
 mod vga_buffer;
 
