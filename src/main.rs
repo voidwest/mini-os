@@ -20,3 +20,6 @@ pub extern "C" fn _start() -> !{
 }
 
 #[cfg(test)]
+pub fn test_runner(tests: &[&dyn Fn()]){
+    
+}
