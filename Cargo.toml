@@ -16,7 +16,6 @@ features = ["spin_no_std"]
 panic = "abort" # comments work
 
 [profile.release]
-panic = "abort" # both aborts disable stack unwinding on panic
 
 [[bin]]
 name = "mini-os"

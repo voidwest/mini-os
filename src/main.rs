@@ -26,3 +26,10 @@ pub fn test_runner(tests: &[&dyn Fn()]){
         test();
     }
 }
+
+#[test_case]
+fn ezpz(){
+    print!("ezpz test");
+    assert_eq!(1, 1);
+    println!("[ok]");
+}
