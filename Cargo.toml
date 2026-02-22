@@ -20,5 +20,5 @@ panic = "abort" # both aborts disable stack unwinding on panic
 
 [[bin]]
 name = "mini-os"
-test = false
+test = true
 bench = false
