@@ -21,3 +21,5 @@ panic = "abort" # comments work
 name = "mini-os"
 test = true
 bench = false
+[package.metadata.bootimage]
+test-args = ["-device", "isa-debug-exit,iobase=0xf4,iosize=0x04"]
