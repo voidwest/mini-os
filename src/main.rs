@@ -24,6 +24,14 @@ pub extern "C" fn _start() -> !{
         loop {}
 }
 
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u32)]
+pub enum QemuExitCode {
+    Success = 0x10,
+    Failure = 0x11,
+}
+
 #[cfg(test)]
 pub fn test_runner(tests: &[&dyn Fn()]){
     println!("running {} tests", tests.len());
