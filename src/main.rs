@@ -36,5 +36,5 @@ pub fn test_runner(tests: &[&dyn Fn()]){
 fn ezpz(){
     print!("ezpz test");
     assert_eq!(1, 1);
-    println!("[ok]");
+    println!(" [ok]");
 }
