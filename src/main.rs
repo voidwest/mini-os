@@ -10,6 +10,7 @@ mod vga_buffer;
 mod serial;
 
 // called on panic
+#[cfg(not(test))]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
@@ -40,6 +41,16 @@ pub fn exit_qemu(exit_code: QemuExitCode){
         let mut port = Port::new(0xf4);
         port.write(exit_code as u32);
     }
+}
+
+
+#[cfg(test)]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> !{
+    serial_println!("[test failed\n");
+    serial_println!("error: {}\n", info);
+    exit_qemu(QemuExitCode::Failure);
+    loop{}
 }
 
 #[cfg(test)]
