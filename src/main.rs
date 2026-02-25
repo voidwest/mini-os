@@ -81,3 +81,7 @@ pub fn test_runner(tests: &[&dyn Testable]){
 fn ezpz(){
     assert_eq!(1, 1);
 }
+#[test_case]
+fn failtest(){
+    assert_eq!(1, 0);
+}
