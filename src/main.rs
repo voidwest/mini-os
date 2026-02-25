@@ -52,7 +52,7 @@ pub fn test_runner(tests: &[&dyn Fn()]){
 
 #[test_case]
 fn ezpz(){
-    print!("ezpz test");
-    assert_eq!(1, 1);
-    println!(" [ok]");
+    serial_print!("ezpz test");
+    assert_eq!(1, 0);
+    serial_println!(" [ok]");
 }
