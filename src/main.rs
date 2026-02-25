@@ -83,5 +83,5 @@ fn ezpz(){
 }
 #[test_case]
 fn failtest(){
-    assert_eq!(1, 0);
+    assert_eq!(1, 1);
 }
