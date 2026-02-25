@@ -7,7 +7,7 @@
 
 use core::{fmt::write, panic::PanicInfo};
 mod vga_buffer;
-
+mod serial;
 
 // called on panic
 #[panic_handler]
