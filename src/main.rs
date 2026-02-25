@@ -72,7 +72,7 @@ fn panic(info: &PanicInfo) -> !{
 pub fn test_runner(tests: &[&dyn Fn()]){
     serial_println!("running {} tests", tests.len());
     for test in tests{
-        test();
+        test.run();
     }
     exit_qemu(QemuExitCode::Success);
 }
