@@ -18,7 +18,7 @@ where
     T: Fn(),
     {
         fn run(&self) {
-            serial_println!("{}...\t", core::any::type_name::<T>());
+            serial_print!("{}...\t", core::any::type_name::<T>());
             self();
             serial_println!("[ok]");
         }
@@ -69,7 +69,7 @@ fn panic(info: &PanicInfo) -> !{
 }
 
 #[cfg(test)]
-pub fn test_runner(tests: &[&dyn Fn()]){
+pub fn test_runner(tests: &[&dyn Testable]){
     serial_println!("running {} tests", tests.len());
     for test in tests{
         test.run();
@@ -79,7 +79,5 @@ pub fn test_runner(tests: &[&dyn Fn()]){
 
 #[test_case]
 fn ezpz(){
-    serial_print!("ezpz test");
     assert_eq!(1, 1);
-    serial_println!(" [ok]");
 }
