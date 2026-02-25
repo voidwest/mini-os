@@ -9,6 +9,10 @@ use core::{fmt::write, panic::PanicInfo};
 mod vga_buffer;
 mod serial;
 
+pub trait Testable {
+    fn run(&self) -> ();
+}
+
 // called on panic
 #[cfg(not(test))]
 #[panic_handler]
