@@ -24,8 +24,29 @@ impl <T> Testable for T
 }
 
 pub fn test_runner(tests: &[&dyn Testable]){
+    serial_println!("Running {} tests", tests.len());
+    for test in tests{
+        test.run();
+    }
+    exit_qemu(QemuExitCode::Success);
+}
+
+pub fn test_panic_handler(info: &PanicInfo) -> !{
     serial_println!("[Failed]\n");
     serial_println!("Error: {}\n", info);
     exit_qemu(QemuExitCode::Failed);
     loop{}
+}
+
+#[cfg(test)]
+#[unsafe(no_mangle)]
+pub extern "C" fn _start() -> !{
+    test_main();
+    loop{}
+}
+
+#[cfg(test)]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> !{
+    test_panic_handler(info)
 }
