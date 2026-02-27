@@ -12,3 +12,7 @@ pub extern "C" fn _start() -> !{
 
     loop{}
 }
+
+fn test_runner(tests: &[&dyn Fn()]){
+    
+}
