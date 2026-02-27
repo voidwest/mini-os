@@ -2,27 +2,11 @@
 #![no_std]
 #![no_main]
 #![feature(custom_test_frameworks)]
-#![test_runner(crate::test_runner)]
+#![test_runner(mini_os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
-use core::{fmt::write, panic::PanicInfo};
-mod vga_buffer;
-mod serial;
-
-pub trait Testable {
-    fn run(&self) -> ();
-}
-
-impl<T> Testable for T
-where 
-    T: Fn(),
-    {
-        fn run(&self) {
-            serial_print!("{}...\t", core::any::type_name::<T>());
-            self();
-            serial_println!("[ok]");
-        }
-    }
+use core::panic::PanicInfo;
+use mini_os::println;
 
 // called on panic
 #[cfg(not(test))]
@@ -62,26 +46,5 @@ pub fn exit_qemu(exit_code: QemuExitCode){
 #[cfg(test)]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> !{
-    serial_println!("[test failed\n");
-    serial_println!("error: {}\n", info);
-    exit_qemu(QemuExitCode::Failure);
-    loop{}
-}
-
-#[cfg(test)]
-pub fn test_runner(tests: &[&dyn Testable]){
-    serial_println!("running {} tests", tests.len());
-    for test in tests{
-        test.run();
-    }
-    exit_qemu(QemuExitCode::Success);
-}
-
-#[test_case]
-fn ezpz(){
-    assert_eq!(1, 1);
-}
-#[test_case]
-fn failtest(){
-    assert_eq!(1, 1);
+    mini_os::test_panic_handler(info)
 }
