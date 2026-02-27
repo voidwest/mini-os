@@ -6,3 +6,8 @@
 #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
+
+pub trait Testable {
+    fn run(&self) -> ();
+}
+
