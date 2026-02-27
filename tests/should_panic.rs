@@ -22,12 +22,16 @@ pub fn test_runner(tests: &[&dyn Fn()]){
     exit_qemu(QemuExitCode::Success);
 }
 
-
-
-
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> !{
     serial_println!("[ok]");
     exit_qemu(QemuExitCode::Success);
     loop{}
+}
+
+
+#[test_case]
+fn failing_test(){
+    serial_println!("should_panic should fail....\t");
+    assert_eq!(0, 1);
 }
