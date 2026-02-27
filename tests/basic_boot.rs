@@ -16,3 +16,10 @@ pub extern "C" fn _start() -> !{
 fn test_runner(tests: &[&dyn Fn()]){
     unimplemented!(); //wait this is kinda sick
 }
+
+#[panic_handler]
+fn panic(info: &PanicInfo) -> !{
+    loop{}
+}
+
+
