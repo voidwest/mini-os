@@ -1,6 +1,7 @@
 use x86_64::VirtAddr;
 use x86_64::structures::tss::TaskStateSegment;
 use lazy_static::lazy_static;
+use x86_64::structures::gdt::{GlobalDescriptorTable, Descriptor};
 
 pub const DOUBLE_FAULT_IST_INDEX: u16 = 0;
 
