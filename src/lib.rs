@@ -1,5 +1,4 @@
 #![no_std]
-
 #![cfg_attr(test, no_main)]
 #![feature(custom_test_frameworks)]
 #![test_runner(crate::test_runner)]
@@ -8,50 +7,51 @@
 
 use core::panic::PanicInfo;
 
-pub mod vga_buffer;
-pub mod serial;
-pub mod interrupts;
 pub mod gdt;
+pub mod interrupts;
+pub mod serial;
+pub mod vga_buffer;
 pub trait Testable {
     fn run(&self) -> ();
 }
 
-impl <T> Testable for T 
-    where T: Fn(),
-    {
-        fn run (&self){
-            serial_print!("{}...\t", core::any::type_name::<T>());
-            self();
-            serial_println!("[ok]");
-        }
+impl<T> Testable for T
+where
+    T: Fn(),
+{
+    fn run(&self) {
+        serial_print!("{}...\t", core::any::type_name::<T>());
+        self();
+        serial_println!("[ok]");
+    }
 }
 
-pub fn test_runner(tests: &[&dyn Testable]){
+pub fn test_runner(tests: &[&dyn Testable]) {
     serial_println!("Running {} tests", tests.len());
-    for test in tests{
+    for test in tests {
         test.run();
     }
     exit_qemu(QemuExitCode::Success);
 }
 
-pub fn test_panic_handler(info: &PanicInfo) -> !{
+pub fn test_panic_handler(info: &PanicInfo) -> ! {
     serial_println!("[Failed]\n");
     serial_println!("Error: {}\n", info);
     exit_qemu(QemuExitCode::Failed);
-    loop{}
+    loop {}
 }
 
 #[cfg(test)]
 #[unsafe(no_mangle)]
-pub extern "C" fn _start() -> !{
+pub extern "C" fn _start() -> ! {
     init();
     test_main();
-    loop{}
+    loop {}
 }
 
 #[cfg(test)]
 #[panic_handler]
-fn panic(info: &PanicInfo) -> !{
+fn panic(info: &PanicInfo) -> ! {
     test_panic_handler(info)
 }
 
@@ -71,7 +71,13 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
     }
 }
 
-pub fn init(){
+pub fn init() {
     gdt::init();
     interrupts::init_idt();
+}
+
+pub fn hlt_loop() -> ! {
+    loop {
+        x86_64::instructions::hlt();
+    }
 }
