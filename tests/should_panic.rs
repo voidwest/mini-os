@@ -3,7 +3,7 @@
 
 use core::panic::PanicInfo;
 use mini_os::{QemuExitCode, exit_qemu, serial_println};
-
+#[unsafe(no_mangle)]
 pub extern "C" fn _start() -> !{
     should_fail();
     serial_println!("[did not panic]");
