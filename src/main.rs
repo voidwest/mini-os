@@ -13,29 +13,23 @@ use mini_os::println;
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
-    loop{}
+    loop {}
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn _start() -> !{
+pub extern "C" fn _start() -> ! {
     println!("Hello World{}", "!");
 
     mini_os::init();
-    x86_64::instructions::interrupts::int3();
-    #[cfg(not(test))]  // ✅ don't run this during tests
-    {fn stack_overflow(){
-        stack_overflow();
-    }
-    stack_overflow();
-    }
+    
     #[cfg(test)]
     test_main();
     println!("didn't crash yet");
-        loop {}
+    loop {}
 }
 
 #[cfg(test)]
 #[panic_handler]
-fn panic(info: &PanicInfo) -> !{
+fn panic(info: &PanicInfo) -> ! {
     mini_os::test_panic_handler(info)
 }
