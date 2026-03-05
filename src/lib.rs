@@ -5,6 +5,7 @@
 #![reexport_test_harness_main = "test_main"]
 #![feature(abi_x86_interrupt)]
 
+#[cfg(test)]
 use bootloader::{BootInfo, entry_point};
 use core::panic::PanicInfo;
 
