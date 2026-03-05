@@ -5,6 +5,7 @@
 #![test_runner(mini_os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+use bootloader::BootInfo;
 use core::panic::PanicInfo;
 use mini_os::println;
 
