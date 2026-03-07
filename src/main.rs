@@ -26,7 +26,7 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     let addresses = [
         0xb000,
-        0x21008,
+        0x201008,
         0x0100_0020_0a10,
         boot_info.physical_memory_offset,
     ];
