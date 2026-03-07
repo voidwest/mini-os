@@ -93,6 +93,14 @@ impl BootInfoFrameAllocator {
     }
 }
 
+unsafe impl FrameAllocator<Size4KiB> for BootInfoFrameAllocator {
+    fn allocate_frame(&mut self) -> Option<PhysFrame<Size4KiB>> {
+        let frame = self.usable_frames().nth(self.next);
+        self.next += 1;
+        frame
+    }
+}
+
 // example mapping for page of frame 0xb8000
 
 pub fn create_example_mapping(
