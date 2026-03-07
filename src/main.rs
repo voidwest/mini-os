@@ -7,7 +7,7 @@
 
 use bootloader::{BootInfo, entry_point};
 use core::panic::PanicInfo;
-use mini_os::println;
+use mini_os::{memory, println};
 
 // called on panic
 #[cfg(not(test))]
@@ -19,10 +19,11 @@ fn panic(info: &PanicInfo) -> ! {
 entry_point!(kernel_main);
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
-    use mini_os::memory::translate_addr;
     use x86_64::{VirtAddr, structures::paging::Translate};
 
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
+
+    let mapper = unsafe { memory::init(phys_mem_offset) };
 
     let addresses = [
         0xb000,
@@ -33,7 +34,7 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     for &address in &addresses {
         let virt = VirtAddr::new(address);
-        let phys = unsafe { translate_addr(virt, phys_mem_offset) };
+        let phys = mapper.translate_addr(virt);
         println!("{:?} -> {:?}", virt, phys);
     }
 
