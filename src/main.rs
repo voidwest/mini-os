@@ -19,15 +19,12 @@ fn panic(info: &PanicInfo) -> ! {
 entry_point!(kernel_main);
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
-    println!("Hello World{}", "!");
     use mini_os::memory::active_level_4_table;
     use x86_64::VirtAddr;
-    mini_os::init();
 
-    let ptr = 0xdeadbeef as *mut u8;
-    unsafe {
-        *ptr = 42;
-    }
+    mini_os::init();
+    println!("Hello World{}", "!");
+
 
     #[cfg(test)]
     test_main();
