@@ -35,4 +35,10 @@ fn translate_addr_inner(addr: VirtAddr, physical_memory_offset: VirtAddr) -> Opt
     ];
 
     let mut frame = level_4_table_frame;
+
+    for &index in &table_indexes {
+        let virt = physical_memory_offset + frame.start_address().as_u64();
+        let table_ptr: *const Pagetable = virt.as_ptr();
+        let table = unsafe { &*table_ptr };
+    }
 }
