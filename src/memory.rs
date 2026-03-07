@@ -38,7 +38,15 @@ fn translate_addr_inner(addr: VirtAddr, physical_memory_offset: VirtAddr) -> Opt
 
     for &index in &table_indexes {
         let virt = physical_memory_offset + frame.start_address().as_u64();
-        let table_ptr: *const Pagetable = virt.as_ptr();
+        let table_ptr: *const PageTable = virt.as_ptr();
         let table = unsafe { &*table_ptr };
+
+        let entry = &table[index];
+        frame = match entry.frame() {
+            Ok(frame) => frame,
+            Err(FrameError::FrameNotPresent) => return None,
+            Err(FrameError::HugeFrame) => panic!("huge pages unsupported"),
+        };
     }
+    Some(frame.start_address() + u64::from(addr.page_offset()))
 }
