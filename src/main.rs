@@ -19,6 +19,7 @@ fn panic(info: &PanicInfo) -> ! {
 entry_point!(kernel_main);
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
+    use x86_64::structures::paging::Page;
     use x86_64::{VirtAddr, structures::paging::Translate};
 
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
