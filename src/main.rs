@@ -20,7 +20,7 @@ entry_point!(kernel_main);
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
     use mini_os::memory::translate_addr;
-    use x86_64::VirtAddr;
+    use x86_64::{VirtAddr, structures::paging::Translate};
 
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
 
