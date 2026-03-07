@@ -25,6 +25,8 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     mini_os::init();
     println!("Hello World{}", "!");
 
+    let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
+    let l4_table = unsafe{ active_level_4_table(phys_mem_offset)};
 
     #[cfg(test)]
     test_main();
