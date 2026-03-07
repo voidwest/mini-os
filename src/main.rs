@@ -29,6 +29,7 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     let l4_table = unsafe { active_level_4_table(phys_mem_offset) };
 
     for (i, entry) in l4_table.iter().enumerate() {
+        use x86_64::structures::paging::PageTable;
         if !entry.is_unused() {
             println!("L4 entry {}: {:?}", i, entry);
         }
