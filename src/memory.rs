@@ -1,7 +1,7 @@
 // oh boy
 use x86_64::{
     PhysAddr, VirtAddr,
-    structures::paging::{OffsetPageTable, PageTable, page_table},
+    structures::paging::{OffsetPageTable, PageTable},
 };
 
 //unsafe bc caller has to make sure complete phys memory as mapped at the passed offset value
