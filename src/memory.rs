@@ -5,7 +5,8 @@ use x86_64::{
 };
 
 //unsafe bc caller has to make sure complete phys memory as mapped at the passed offset value
-pub unsafe fn active_level_4_table(physical_memory_offset: VirtAddr) -> &'static mut PageTable {
+
+unsafe fn active_level_4_table(physical_memory_offset: VirtAddr) -> &'static mut PageTable {
     use x86_64::registers::control::Cr3;
 
     let (level_4_table_frame, _) = Cr3::read();
