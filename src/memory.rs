@@ -67,6 +67,15 @@ unsafe impl FrameAllocator<Size4KiB> for EmptyFrameAllocator {
     }
 }
 
+use bootloader::bootinfo::MemoryMap;
+
+pub struct BootInfoFrameAllocator {
+    memory_map: &'static MemoryMap,
+    next: usize,
+}
+
+impl BootInfoFrameAllocator
+
 // example mapping for page of frame 0xb8000
 
 pub fn create_example_mapping(

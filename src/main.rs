@@ -28,6 +28,12 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     let mut frame_allocator = memory::EmptyFrameAllocator;
 
+    let page = Page::containing_address(VirtAddr::new(0));
+    memory::create_example_mapping(page, &mut mapper, &mut frame_allocator);
+
+    let page_ptr: *mut u64 = page.start_address().as_mut_ptr();
+    unsafe { page_ptr.offset(400).write_volatile(0x_f021_f077_f065_f04e) };
+
     let addresses = [
         0xb000,
         0x201008,
