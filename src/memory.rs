@@ -21,4 +21,18 @@ pub unsafe fn translate_addr(addr: VirtAddr, physical_memory_offset: VirtAddr) -
     translate_addr_inner(addr, physical_memory_offset)
 }
 
-fn translate_addr_inner(addr: VirtAddr, physical_memory_offset: VirtAddr) -> Option<PhysAddr> {}
+fn translate_addr_inner(addr: VirtAddr, physical_memory_offset: VirtAddr) -> Option<PhysAddr> {
+    use x86_64::registers::control::Cr3;
+    use x86_64::structures::paging::page_table::FrameError;
+
+    let (level_4_table_frame, _) = Cr3::read();
+
+    let table_indexes = [
+        addr.p4_index(),
+        addr.p3_index(),
+        addr.p2_index(),
+        addr.p1_index(),
+    ];
+
+    let mut frame = level_4_table_frame;
+}
