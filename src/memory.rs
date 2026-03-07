@@ -1,9 +1,9 @@
 // oh boy
+use x86_64::structures::paging::{FrameAllocator, Mapper, Page, PhysFrame, Size4KiB};
 use x86_64::{
     PhysAddr, VirtAddr,
     structures::paging::{OffsetPageTable, PageTable},
 };
-
 //unsafe bc caller has to make sure complete phys memory as mapped at the passed offset value
 
 pub unsafe fn init(physical_memory_offset: VirtAddr) -> OffsetPageTable<'static> {
