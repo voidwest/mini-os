@@ -22,8 +22,7 @@ entry_point!(kernel_main);
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
     use mini_os::memory::BootInfoFrameAllocator;
-    use x86_64::structures::paging::Page;
-    use x86_64::{VirtAddr, structures::paging::Translate};
+    use x86_64::VirtAddr;
 
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
 
