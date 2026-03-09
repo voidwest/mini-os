@@ -48,6 +48,16 @@ fn large_vec() {
     assert_eq!(vec.iter().sum::<u64>(), (n - 1) * n / 2);
 }
 
+use mini_os::allocator::HEAP_SIZE;
+
+#[test_case]
+fn lotta_boxes() {
+    for i in 0..HEAP_SIZE {
+        let y = Box::new(i);
+        assert_eq!(*y, i);
+    }
+}
+
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     mini_os::test_panic_handler(info)
