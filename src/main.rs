@@ -21,6 +21,7 @@ fn panic(info: &PanicInfo) -> ! {
 entry_point!(kernel_main);
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
+    use mini_os::allocator;
     use mini_os::memory::BootInfoFrameAllocator;
     use x86_64::VirtAddr;
 
