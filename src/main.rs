@@ -31,10 +31,12 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     let mut frame_allocator = unsafe { BootInfoFrameAllocator::init(&boot_info.memory_map) };
 
-    mini_os::init();
-    println!("Hello World{}", "!");
+    allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap init failed");
 
     let x = Box::new(41);
+
+    mini_os::init();
+    println!("Hello World{}", "!");
 
     #[cfg(test)]
     test_main();
