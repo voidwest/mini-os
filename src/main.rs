@@ -34,6 +34,8 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     mini_os::init();
     println!("Hello World{}", "!");
 
+    let x = Box::new(41);
+
     #[cfg(test)]
     test_main();
     println!("didn't crash yet");
