@@ -26,6 +26,15 @@ fn main(boot_info: &'static BootInfo) -> ! {
     loop {}
 }
 
+use alloc::boxed::Box;
+
+#[test_case]
+fn simple_alloc() {
+    let heap_value_1 = Box::new(41);
+    let heap_value_2 = Box::new(13);
+    assert_eq!(*heap_value_1, 41);
+    assert_eq!(*heap_value_2, 13);
+}
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     mini_os::test_panic_handler(info)
