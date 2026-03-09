@@ -23,3 +23,9 @@ unsafe impl GlobalAlloc for Dummy {
 
 #[global_allocator]
 static ALLOCATOR: Dummy = Dummy;
+
+pub fn init(
+    mapper: &mut impl Mapper<Size4KiB>,
+    frame_allocator: &mut impl FrameAllocator<Size4KiB>,
+) -> Result<(), MapToError<Size4KiB>> {
+}
