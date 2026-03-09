@@ -45,6 +45,16 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     let reference_counted = Rc::new(vec![1, 2, 3]);
     let cloned_reference = reference_counted.clone();
 
+    println!(
+        "current reference count is {}",
+        Rc::strong_count(&cloned_reference)
+    );
+    core::mem::drop(reference_counted);
+    println!(
+        "dropped reference count is {}",
+        Rc::strong_count(&cloned_reference)
+    );
+
     mini_os::init();
     println!("Hello World{}", "!");
 
