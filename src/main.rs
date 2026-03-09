@@ -7,7 +7,7 @@
 
 extern crate alloc;
 
-use alloc::{boxed::Box, rc::Rc, vec, vec::Vec};
+use alloc::{borrow::ToOwned, boxed::Box, rc::Rc, vec, vec::Vec};
 use bootloader::{BootInfo, entry_point};
 use core::panic::PanicInfo;
 use mini_os::{memory, println};
@@ -41,6 +41,9 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
         vec.push(i);
     }
     println!("vec at {:p}", vec.as_slice());
+
+    let reference_counted = Rc::new(vec![1, 2, 3]);
+    let cloned_reference = reference_counted.clone();
 
     mini_os::init();
     println!("Hello World{}", "!");
