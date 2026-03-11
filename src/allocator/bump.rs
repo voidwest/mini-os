@@ -8,7 +8,7 @@ pub struct BumpAllocator {
 }
 
 impl BumpAllocator {
-    pub const fn new() -> self {
+    pub const fn new() -> Self {
         BumpAllocator {
             heap_start: 0,
             heap_end: 0,
