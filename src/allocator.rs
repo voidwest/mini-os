@@ -50,3 +50,7 @@ pub fn init_heap(
     }
     Ok(())
 }
+
+pub struct Locked<A> {
+    inner: spin::Mutex<A>,
+}
