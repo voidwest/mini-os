@@ -66,3 +66,5 @@ impl<A> Locked<A> {
         self.inner.lock()
     }
 }
+
+fn align_up(addr: usize, align: usize) -> usize {}
