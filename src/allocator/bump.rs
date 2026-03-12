@@ -1,3 +1,4 @@
+use super::{Locked, align_up};
 use core::alloc::{GlobalAlloc, Layout};
 
 pub struct BumpAllocator {
