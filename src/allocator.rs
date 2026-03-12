@@ -67,4 +67,11 @@ impl<A> Locked<A> {
     }
 }
 
-fn align_up(addr: usize, align: usize) -> usize {}
+fn align_up(addr: usize, align: usize) -> usize {
+    let remainder = addr % align;
+    if remainder == 0 {
+        addr
+    } else {
+        addr - remainder + align
+    }
+}
