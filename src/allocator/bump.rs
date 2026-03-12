@@ -37,3 +37,8 @@ unsafe impl GlobalAlloc for BumpAllocator {
         todo!()
     }
 }
+unsafe impl GlobalAlloc for Locked<BumpAllocator> {
+    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
+        let mut bump = self.lock(); //mut ref
+    }
+}
