@@ -15,7 +15,7 @@ pub const HEAP_SIZE: usize = 100 * 1024; //100 kib
 use bump::BumpAllocator;
 
 #[global_allocator]
-static ALLOCATOR: LockedHeap = LockedHeap::empty();
+static ALLOCATOR: Locked<BumpAllocator> = Locked::new(BumpAllocator::new());
 
 pub fn init_heap(
     mapper: &mut impl Mapper<Size4KiB>,
