@@ -26,17 +26,6 @@ impl BumpAllocator {
     }
 }
 
-unsafe impl GlobalAlloc for BumpAllocator {
-    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-        let alloc_start = self.next;
-        self.next = alloc_start + layout.size();
-        self.allocations += 1;
-        alloc_start as *mut u8
-    }
-    unsafe fn dealloc(&self, _ptr: *mut u8, _layout: Layout) {
-        todo!()
-    }
-}
 unsafe impl GlobalAlloc for Locked<BumpAllocator> {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
         let mut bump = self.lock(); //mut ref
