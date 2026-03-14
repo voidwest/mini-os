@@ -3,4 +3,10 @@ struct ListNode {
     next: Option<&'static mut ListNode>,
 }
 
-impl ListNode {}
+impl ListNode {
+    const fn new(size: usize) -> Self {
+        ListNode { size, next: None }
+    }
+    
+    
+}
