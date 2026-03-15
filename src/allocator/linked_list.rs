@@ -27,4 +27,15 @@ impl LinkedListAllocator {
             head: ListNode::new(0),
         }
     }
+
+    pub unsafe fn init(&mut self, heap_start: usize, heap_size: usize){
+        unsafe{
+            self.add_free_region(&mut self, addr: usize, size: usize);
+        }
+    }
+
+    unsafe fn add_free_region(&mut self, addr: usize, size: usize){
+        todo!();
+    }
+
 }
