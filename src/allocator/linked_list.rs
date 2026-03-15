@@ -16,3 +16,7 @@ impl ListNode {
         self.start_addr() + self.size
     }
 }
+
+pub struct LinkedListAllocator {
+    head: ListNode,
+}
