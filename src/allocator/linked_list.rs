@@ -20,3 +20,11 @@ impl ListNode {
 pub struct LinkedListAllocator {
     head: ListNode,
 }
+
+impl LinkedListAllocator {
+    pub const fn new() -> Self {
+        Self {
+            head: ListNode::new(0),
+        }
+    }
+}
