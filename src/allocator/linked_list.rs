@@ -33,7 +33,7 @@ impl LinkedListAllocator {
             self.add_free_region(&mut self, addr: usize, size: usize);
         }
     }
-    use super::align_up;
+
     unsafe fn add_free_region(&mut self, addr: usize, size: usize){
         todo!();
     }
