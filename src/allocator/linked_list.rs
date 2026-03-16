@@ -39,5 +39,8 @@ use super::align_up;
 use core::mem;
 
 impl LinkedListAllocator{
-
+    unsafe fn add_free_region(&mut self, addr: usize, size: usize){
+        assert_eq!(align_up(addr, mem::align_of::<ListNode>()), addr);
+        assert!(size >= mem::size_of::<ListNode>());
+    }
 }
