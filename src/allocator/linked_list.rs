@@ -56,6 +56,6 @@ impl LinkedListAllocator {
 }
 
 impl LinkedListAllocator {
-    fn fidn_region(&mut self, size: usize, align: usize) -> Option<(&'static mut ListNode, usize)> {
+    fn find_region(&mut self, size: usize, align: usize) -> Option<(&'static mut ListNode, usize)> {
     }
 }
