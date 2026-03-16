@@ -54,3 +54,5 @@ impl LinkedListAllocator {
         }
     }
 }
+
+impl LinkedListAllocator {}
