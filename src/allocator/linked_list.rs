@@ -40,3 +40,4 @@ impl LinkedListAllocator {
 }
 
 use super::align_up;
+use core::mem;
