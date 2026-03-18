@@ -119,3 +119,15 @@ unsafe impl GlobalAlloc for Locked<LinkedListAllocator> {
         }
     }
 }
+
+impl LinkedListAllocator {
+    fn size_align(layout: Layout) -> (usize, usize) {
+        let layout = layout
+            .align_to(mem::align_of::<ListNode>())
+            .expect("adjusting alignment failed")
+            .pad_to_align();
+
+        let size = layout.size().max(mem::size_of::<ListNode>());
+        (size, layout.align())
+    }
+}
