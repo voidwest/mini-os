@@ -72,5 +72,7 @@ impl LinkedListAllocator {
 }
 
 impl LinkedListAllocator {
-    fn alloc_from_region(region: &ListNode, size: usize, align: usize) -> Result<usize, ()> {}
+    fn alloc_from_region(region: &ListNode, size: usize, align: usize) -> Result<usize, ()> {
+        let alloc_start = align_up(region.start_addr(), align);
+    }
 }
