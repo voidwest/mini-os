@@ -85,3 +85,7 @@ impl LinkedListAllocator {
         Ok(alloc_start)
     }
 }
+
+use super::Locked;
+use alloc::alloc::{GlobalAlloc, Layout};
+use core::ptr;
