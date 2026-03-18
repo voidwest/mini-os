@@ -75,5 +75,13 @@ impl LinkedListAllocator {
     fn alloc_from_region(region: &ListNode, size: usize, align: usize) -> Result<usize, ()> {
         let alloc_start = align_up(region.start_addr(), align);
         let alloc_end = alloc_start.checked_add(size).ok_or(())?;
+        if alloc_end > region.end_addr() {
+            return Err(());
+        }
+        let excess_size = region.end_addr() - alloc_end;
+        if excess_size > 0 && excess_size < mem::size_of::<ListNode>() {
+            return Err(());
+        }
+        Ok(alloc_start)
     }
 }
