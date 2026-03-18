@@ -70,3 +70,5 @@ impl LinkedListAllocator {
         None
     }
 }
+
+impl LinkedListAllocator {}
