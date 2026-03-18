@@ -87,7 +87,17 @@ impl LinkedListAllocator {
 }
 
 use super::Locked;
-use alloc::alloc::{GlobalAlloc, Layout};
+use alloc::{
+    alloc::{GlobalAlloc, Layout},
+    string::ToString,
+};
 use core::ptr;
 
-unsafe impl GlobalAlloc for Locked<LinkedListAllocator> {}
+unsafe impl GlobalAlloc for Locked<LinkedListAllocator> {
+    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
+        let (size, align) = LinkedListAllocator::size_align(layout);
+        let mut allocator = self.lock();
+
+        if let Some((region, alloc_start)) = allocator.find_region(size, align)
+    }
+}
