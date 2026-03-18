@@ -71,4 +71,6 @@ impl LinkedListAllocator {
     }
 }
 
-impl LinkedListAllocator {}
+impl LinkedListAllocator {
+    fn alloc_from_region(region: &ListNode, size: usize, align: usize) -> Result<usize, ()> {}
+}
