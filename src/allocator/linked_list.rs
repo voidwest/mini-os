@@ -106,6 +106,9 @@ unsafe impl GlobalAlloc for Locked<LinkedListAllocator> {
                     allocator.add_free_region(alloc_end, excess_size);
                 }
             }
+            alloc_start as *mut u8
+        } else {
+            ptr::null_mut()
         }
     }
 }
