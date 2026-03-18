@@ -62,7 +62,8 @@ impl LinkedListAllocator {
             if let Ok(alloc_start) = Self::alloc_from_region(&region, size, align) {
                 let next = region.next.take();
                 let ret = Some((current.next.take().unwrap(), alloc_start));
-                current.next = next;
+                current.next = next;> cargo test --test heap_allocation
+                return ret;
             } else {
                 current = current.next.as_mut().unwrap();
             }
