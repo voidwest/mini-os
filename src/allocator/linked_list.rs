@@ -111,4 +111,6 @@ unsafe impl GlobalAlloc for Locked<LinkedListAllocator> {
             ptr::null_mut()
         }
     }
+
+    unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {}
 }
