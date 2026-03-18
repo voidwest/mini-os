@@ -112,5 +112,10 @@ unsafe impl GlobalAlloc for Locked<LinkedListAllocator> {
         }
     }
 
-    unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {}
+    unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
+        let (size, _) = LinkedListAllocator::size_align(layout);
+        unsafe {
+            self.lock().add_free_region(ptr as usize, size);
+        }
+    }
 }
