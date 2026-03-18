@@ -89,3 +89,5 @@ impl LinkedListAllocator {
 use super::Locked;
 use alloc::alloc::{GlobalAlloc, Layout};
 use core::ptr;
+
+unsafe impl GlobalAlloc for Locked<LinkedListAllocator> {}
