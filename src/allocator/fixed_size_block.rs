@@ -2,4 +2,4 @@ struct ListNode {
     next: Option<&'static mut ListNode>,
 }
 
-const BLOCK_SIZES: &[usize] = &[8];
+const BLOCK_SIZES: &[usize] = &[8, 16, 32];
