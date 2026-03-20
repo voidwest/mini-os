@@ -42,7 +42,6 @@ fn list_index(layout: &Layout) -> Option<usize> {
 }
 
 use super::Locked;
-use alloc::alloc::GlobalAlloc;
 
 unsafe impl GlobalAlloc for Locked<FixedSizeBlockAllocator> {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
