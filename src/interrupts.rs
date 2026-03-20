@@ -1,5 +1,3 @@
-use core::iter::Chain;
-
 use crate::hlt_loop;
 use crate::{gdt, println};
 use lazy_static::lazy_static;
