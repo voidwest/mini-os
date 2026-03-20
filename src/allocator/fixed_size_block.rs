@@ -71,6 +71,19 @@ unsafe impl GlobalAlloc for Locked<FixedSizeBlockAllocator> {
                 let new_node = ListNode {
                     next: allocator.list_heads[index].take(),
                 };
+                assert!(mem::size_of::<ListNode>() <= BLOCK_SIZES[index]);
+                assert!(mem::align_of::<ListNode>() <= BLOCK_SIZES[index]);
+                let new_node_ptr = ptr as *mut ListNode;
+                unsafe {
+                    new_node_ptr.write(new_node);
+                    allocator.list_heads[index] = Some(&mut *new_node_ptr);
+                }
+            }
+            None => {
+                let ptr = NonNull::new(ptr).unwrap();
+                unsafe {
+                    allocator.fallback_allocator.deallocate(ptr, layout);
+                }
             }
         }
     }
