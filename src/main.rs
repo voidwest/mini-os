@@ -7,7 +7,7 @@
 
 extern crate alloc;
 
-use alloc::{borrow::ToOwned, boxed::Box, rc::Rc, vec, vec::Vec};
+use alloc::{boxed::Box, rc::Rc, vec, vec::Vec};
 use bootloader::{BootInfo, entry_point};
 use core::panic::PanicInfo;
 use mini_os::{memory, println};
