@@ -23,3 +23,15 @@ impl FixedSizeBlockAllocator {
         unsafe { self.fallback_allocator.init(heap_start, heap_size) }
     }
 }
+
+use alloc::alloc::Layout;
+use core::ptr;
+
+impl FixedSizeBlockAllocator {
+    fn fallback_alloc(&mut self, layout: Layout) -> *mut u8 {
+        match self.fallback_allocator.allocate_first_fit(layout) {
+            Ok(ptr) => ptr.as_ptr(),
+            Err(_) => ptr::null_mut(),
+        }
+    }
+}
