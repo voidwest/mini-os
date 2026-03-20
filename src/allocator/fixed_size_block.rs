@@ -35,3 +35,8 @@ impl FixedSizeBlockAllocator {
         }
     }
 }
+
+fn list_index(layout: &Layout) -> Option<usize> {
+    let required_block_size = layout.size().max(layout.align());
+    BLOCK_SIZES.iter().position(|&s| s >= required_block_size)
+}
