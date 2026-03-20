@@ -25,10 +25,8 @@ impl FixedSizeBlockAllocator {
 }
 
 use alloc::alloc::Layout;
-use core::{
-    alloc::{GlobalAlloc, Layout},
-    ptr,
-};
+use core::{alloc::GlobalAlloc, ptr};
+use core::{mem, ptr::NonNull};
 
 impl FixedSizeBlockAllocator {
     fn fallback_alloc(&mut self, layout: Layout) -> *mut u8 {
