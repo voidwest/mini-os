@@ -25,7 +25,7 @@ impl FixedSizeBlockAllocator {
 }
 
 use alloc::alloc::Layout;
-use core::ptr;
+use core::{alloc::GlobalAlloc, ptr};
 
 impl FixedSizeBlockAllocator {
     fn fallback_alloc(&mut self, layout: Layout) -> *mut u8 {
@@ -39,4 +39,17 @@ impl FixedSizeBlockAllocator {
 fn list_index(layout: &Layout) -> Option<usize> {
     let required_block_size = layout.size().max(layout.align());
     BLOCK_SIZES.iter().position(|&s| s >= required_block_size)
+}
+
+use super::Locked;
+use alloc::alloc::GlobalAlloc;
+
+unsafe impl GlobalAlloc for Locked<FixedSizeBlockAllocator> {
+    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
+        todo!()
+    }
+
+    unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
+        todo!()
+    }
 }
