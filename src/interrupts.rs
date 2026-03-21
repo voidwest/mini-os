@@ -3,7 +3,7 @@ use crate::{gdt, print, println};
 use lazy_static::lazy_static;
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame, PageFaultErrorCode};
 
-lazy_static! {
+/*lazy_static! {
     static ref IDT: InterruptDescriptorTable = {
         let mut idt = InterruptDescriptorTable::new();
         idt.breakpoint.set_handler_fn(breakpoint_handler);
@@ -16,7 +16,7 @@ lazy_static! {
         idt
     };
 }
-
+*/
 pub fn init_idt() {
     IDT.load();
 }
@@ -72,4 +72,18 @@ impl InterruptIndex {
     fn as_usize(self) -> usize {
         usize::from(self.as_u8())
     }
+}
+
+lazy_static! {
+    static ref IDT: InterruptDescriptorTable = {
+        let mut idt = InterruptDescriptorTable::new();
+        idt.breakpoint.set_handler_fn(breakpoint_handler);
+        idt[InterruptIndex::Timer.as_usize()].set_handler_fn(timer_interrupt_handler);
+
+        idt
+    };
+}
+
+extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: InterruptStackFrame) {
+    print!(".")
 }
