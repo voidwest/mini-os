@@ -68,6 +68,11 @@ async fn async_num() -> u8 {
     42
 }
 
+async fn example_task() {
+    let number = async_num().await;
+    println!("async num is {}", number);
+}
+
 #[cfg(test)]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
