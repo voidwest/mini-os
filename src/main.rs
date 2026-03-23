@@ -64,6 +64,10 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     mini_os::hlt_loop();
 }
 
+async fn async_num() -> u8 {
+    42
+}
+
 #[cfg(test)]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
