@@ -28,7 +28,7 @@ cargo run
 ## What I Learned
 
 - Barebones and no std programming.
-- Thinking in systems.
+- Thinking in systems, understanding how the bootloader, kernel, and hardware interact as a whole rather than isolated components.
 - Having to know how every piece interacts with one another.
 - Writing Rust in a new way using features that usually don't appear.
 
