@@ -57,8 +57,8 @@ cargo run
 
 ## references
 
-### Writing an OS in Rust by Philipp Oppermann
+### [Writing an OS in Rust by Philipp Oppermann] (https://os.phil-opp.com/)
 
-license
+## license
 
 mit
