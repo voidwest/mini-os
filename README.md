@@ -47,17 +47,17 @@ cargo run
 ```
 ## roadmap
 
-    [ ] full network stack implementation
+[ ] full network stack implementation
 
-    [ ] basic multitasking / user-mode threads
+[ ] basic multitasking / user-mode threads
 
-    [ ] simple filesystem support
+[ ] simple filesystem support
 
-    [ ] graphical output support
+[ ] graphical output support
 
 ## references
 
-    Writing an OS in Rust by Philipp Oppermann
+### Writing an OS in Rust by Philipp Oppermann
 
 license
 
