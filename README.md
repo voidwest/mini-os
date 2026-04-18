@@ -1,36 +1,64 @@
-# miniOS
+# mini-os
 
-A minimal x86_64 operating system kernel written in Rust, built following Philipp Oppermann's [Writing an OS in Rust](https://os.phil-opp.com/) series.
+a minimal x86_64 kernel written in rust. built to handle the low-level handshake between hardware and software without an underlying operating system.
 
-## Features
+## features
+- boots on bare metal + qemu
+- memory paging & interrupt handling
+- bare-metal hardware interfaces (no-std)
+- custom linker scripts & bootloader setup
+- network stack (wip)
 
-- Boots on bare metal and QEMU
-- Memory paging and interrupt handling
-- Bare-metal hardware interfaces without the standard library
-- Custom linker scripts and bootloader setup
-- Network stack *(in progress)*
+## tech stack
+- rust (nightly)
+- llvm (x86_64-unknown-none)
+- qemu (emulation)
+- bootimage (bootloader integration)
 
-## Running
+---
 
-### Dependencies
+## design decisions
 
+### why no_std?
+to run on bare metal, the kernel cannot depend on the rust standard library, which requires an existing os (libc). writing in `no_std` ensures the binary only contains code that can execute directly on the cpu.
+
+### why a custom target spec?
+instead of using a generic target, a custom `x86_64-mini-os.json` was implemented to define the exact cpu features, memory layout, and disabling of features like red zones. this allows for full control over how the llvm compiler generates the kernel binary.
+
+### why custom linker scripts?
+the bootloader expects the kernel entry point to be at a specific memory address. the custom linker setup ensures that the kernel sections (text, data, rodata) are mapped correctly in the executable, preventing memory corruption at boot.
+
+### handling interrupts
+used a custom global descriptor table (gdt) and interrupt descriptor table (idt) to handle hardware interrupts and exceptions (like double faults) safely in rust without crashing the system.
+
+---
+
+## getting started
+
+### 1. deps
 ```bash
-cargo install bootimage
 rustup target add x86_64-unknown-none
+cargo install bootimage
 ```
 
-### Run in QEMU
-
+### 2. run
 ```bash
 cargo run
 ```
+## roadmap
 
-## What I Learned
+    [ ] full network stack implementation
 
-- Barebones and no std programming.
-- Thinking in systems, understanding how the bootloader, kernel, and hardware interact as a whole rather than isolated components.
-- Writing Rust in a new way using features that usually don't appear.
+    [ ] basic multitasking / user-mode threads
 
-## References
+    [ ] simple filesystem support
 
-- [Writing an OS in Rust](https://os.phil-opp.com/) by Philipp Oppermann
+    [ ] graphical output support
+
+## references
+
+    Writing an OS in Rust by Philipp Oppermann
+
+license
+
+mit
