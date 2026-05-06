@@ -17,15 +17,16 @@ impl ListNode {
     }
 }
 
+/// A linked-list-based allocator that maintains a singly-linked list of free
+/// memory regions. Supports splitting and coalescing (via deallocation) of
+/// adjacent free blocks.
 pub struct LinkedListAllocator {
     head: ListNode,
 }
 
 impl LinkedListAllocator {
     pub const fn new() -> Self {
-        Self {
-            head: ListNode::new(0),
-        }
+        Self { head: ListNode::new(0) }
     }
 
     pub unsafe fn init(&mut self, heap_start: usize, heap_size: usize) {
