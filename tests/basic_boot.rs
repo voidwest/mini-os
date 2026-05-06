@@ -7,16 +7,13 @@
 use core::panic::PanicInfo;
 
 #[unsafe(no_mangle)]
-pub extern "C" fn _start() -> !{
+pub extern "C" fn _start() -> ! {
     test_main();
 
-    loop{}
+    loop {}
 }
-
 
 #[panic_handler]
-fn panic(info: &PanicInfo) -> !{
+fn panic(info: &PanicInfo) -> ! {
     mini_os::test_panic_handler(info)
 }
-
-
