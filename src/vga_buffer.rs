@@ -2,6 +2,7 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 struct ColorCode(u8);
+/// The 16 standard VGA text-mode colors.
 pub enum Color {
     Black = 0,
     Blue = 1,
@@ -43,6 +44,9 @@ struct Buffer {
     chars: [[Volatile<ScreenChar>; BUFFER_WIDTH]; BUFFER_HEIGHT],
 }
 
+/// A writer for the VGA text-mode buffer (80×25, 16 colors).
+///
+/// Writes characters at the bottom row and scrolls upward when the line is full.
 pub struct Writer {
     column_position: usize,
     color_code: ColorCode,
@@ -50,6 +54,7 @@ pub struct Writer {
 }
 
 impl Writer {
+    /// Write a single ASCII byte to the screen.
     pub fn write_byte(&mut self, byte: u8) {
         match byte {
             b'\n' => self.new_line(),
@@ -62,20 +67,19 @@ impl Writer {
                 let col = self.column_position;
 
                 let color_code = self.color_code;
-                self.buffer.chars[row][col].write(ScreenChar {
-                    ascii_character: byte,
-                    color_code,
-                });
+                self.buffer.chars[row][col].write(ScreenChar { ascii_character: byte, color_code });
                 self.column_position += 1;
             }
         }
     }
 
+    /// Write a string to the screen, skipping non-printable characters and
+    /// rendering unknown bytes as `■` (0xfe).
     pub fn write_string(&mut self, s: &str) {
         for byte in s.bytes() {
             match byte {
                 0x20..=0x7e | b'\n' => self.write_byte(byte),
-                _ => self.write_byte(0xfe), // worst case
+                _ => self.write_byte(0xfe),
             }
         }
     }
@@ -91,10 +95,7 @@ impl Writer {
     }
 
     fn clear_row(&mut self, row: usize) {
-        let blank = ScreenChar {
-            ascii_character: b' ',
-            color_code: self.color_code,
-        };
+        let blank = ScreenChar { ascii_character: b' ', color_code: self.color_code };
         for col in 0..BUFFER_WIDTH {
             self.buffer.chars[row][col].write(blank);
         }
