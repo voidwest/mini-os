@@ -8,14 +8,18 @@ use x86_64::{
     },
 };
 
+/// Virtual address where the kernel heap begins.
 pub const HEAP_START: usize = 0x_4444_4444_0000;
-pub const HEAP_SIZE: usize = 100 * 1024; //100 kib
+/// Size of the kernel heap in bytes (100 KiB).
+pub const HEAP_SIZE: usize = 100 * 1024;
 
 use fixed_size_block::FixedSizeBlockAllocator;
 
 #[global_allocator]
 static ALLOCATOR: Locked<FixedSizeBlockAllocator> = Locked::new(FixedSizeBlockAllocator::new());
 
+/// Initialize the kernel heap by mapping the heap page range and configuring
+/// the global allocator.
 pub fn init_heap(
     mapper: &mut impl Mapper<Size4KiB>,
     frame_allocator: &mut impl FrameAllocator<Size4KiB>,
@@ -29,9 +33,7 @@ pub fn init_heap(
     };
 
     for page in page_range {
-        let frame = frame_allocator
-            .allocate_frame()
-            .ok_or(MapToError::FrameAllocationFailed)?;
+        let frame = frame_allocator.allocate_frame().ok_or(MapToError::FrameAllocationFailed)?;
         let flags = PageTableFlags::PRESENT | PageTableFlags::WRITABLE;
         unsafe { mapper.map_to(page, frame, flags, frame_allocator)?.flush() };
         unsafe {
@@ -41,15 +43,16 @@ pub fn init_heap(
     Ok(())
 }
 
+/// A mutual-exclusion wrapper providing interior mutability for allocators.
+///
+/// Backed by a spinlock so it can be used in interrupt contexts.
 pub struct Locked<A> {
     inner: spin::Mutex<A>,
 }
 
 impl<A> Locked<A> {
     pub const fn new(inner: A) -> Self {
-        Locked {
-            inner: spin::Mutex::new(inner),
-        }
+        Locked { inner: spin::Mutex::new(inner) }
     }
 
     pub fn lock(&self) -> spin::MutexGuard<'_, A> {
