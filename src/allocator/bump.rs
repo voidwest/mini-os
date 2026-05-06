@@ -2,8 +2,7 @@ use super::{Locked, align_up};
 use core::alloc::{GlobalAlloc, Layout};
 use core::ptr;
 
-/// A simple bump allocator that allocates memory linearly and only frees
-/// all allocations when the count drops to zero.
+/// simple bump allocator — allocates linearly, frees all when count hits zero.
 pub struct BumpAllocator {
     heap_start: usize,
     heap_end: usize,
@@ -16,11 +15,10 @@ impl BumpAllocator {
         BumpAllocator { heap_start: 0, heap_end: 0, next: 0, allocations: 0 }
     }
 
-    /// Initialize the bump allocator with the given heap boundaries.
+    /// init with heap boundaries.
     ///
     /// # Safety
-    /// The caller must ensure the region `heap_start..heap_start+heap_size`
-    /// contains only valid, free memory.
+    /// the region `heap_start..heap_start+heap_size` must be valid, free memory.
     pub unsafe fn init(&mut self, heap_start: usize, heap_size: usize) {
         self.heap_start = heap_start;
         self.heap_end = heap_start + heap_size;

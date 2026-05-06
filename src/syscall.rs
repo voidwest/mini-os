@@ -4,7 +4,7 @@ global_asm!(
     ".global syscall_handler_asm",
     ".type syscall_handler_asm, @function",
     "syscall_handler_asm:",
-    // Save caller-saved registers.
+    // save caller-saved registers.
     "push rdi",
     "push rsi",
     "push rdx",
@@ -13,15 +13,15 @@ global_asm!(
     "push r9",
     "push r10",
     "push r11",
-    // Call handle_syscall(num=rax, arg1=rdi_orig, arg2=rsi_orig) -> ret in rax.
+    // call handle_syscall(num=rax, arg1=rdi_orig, arg2=rsi_orig) -> ret in rax.
     "mov rdi, rax",
     "mov rsi, [rsp+56]",
     "mov rdx, [rsp+48]",
     "call handle_syscall",
-    // Check if this was an exit syscall (return value == 1).
+    // check if this was an exit syscall (return value == 1).
     "cmp rax, 1",
     "je syscall_exit_kernel",
-    // Normal return: restore registers and iretq back to user mode.
+    // normal return: restore registers and iretq back to user mode.
     "pop r11",
     "pop r10",
     "pop r9",
@@ -32,19 +32,22 @@ global_asm!(
     "pop rdi",
     "iretq",
     "syscall_exit_kernel:",
-    // Discard saved registers and iretq frame, then resume kernel shell.
+    // discard saved registers and iretq frame, then resume kernel shell.
     "add rsp, 64",
     "add rsp, 40",
-    // Switch to kernel stack and return to the shell resume point.
+    // switch to kernel stack and jump to the shell resume point.
     "mov rsp, QWORD PTR [rip + exit_kernel_stack]",
     "mov rax, QWORD PTR [rip + exit_kernel_rip]",
     "jmp rax",
+    ".section .data",
     ".global exit_kernel_stack",
     ".global exit_kernel_rip",
+    ".balign 8",
     "exit_kernel_stack:",
     ".quad 0",
     "exit_kernel_rip:",
     ".quad 0",
+    ".previous",
 );
 
 unsafe extern "sysv64" {
@@ -54,10 +57,10 @@ unsafe extern "sysv64" {
 pub const SYS_WRITE: u64 = 1;
 pub const SYS_EXIT: u64 = 2;
 
-/// Set the kernel stack pointer and return address to use after SYS_EXIT.
+/// set the kernel stack pointer and return address for the SYS_EXIT path.
 ///
 /// # Safety
-/// Must point to valid kernel stack and a function that never returns.
+/// must point to a valid kernel stack and a non-returning function.
 pub unsafe fn set_exit_context(stack_ptr: u64, rip: u64) {
     unsafe {
         core::ptr::write_volatile(core::ptr::addr_of_mut!(exit_kernel_stack), stack_ptr);
@@ -71,7 +74,7 @@ unsafe extern "Rust" {
     static mut exit_kernel_rip: u64;
 }
 
-/// Syscall dispatch: called from the assembly stub.
+/// syscall dispatch: called from the assembly stub.
 #[unsafe(no_mangle)]
 extern "sysv64" fn handle_syscall(num: u64, ptr: u64, len: u64) -> u64 {
     match num {
@@ -86,13 +89,13 @@ extern "sysv64" fn handle_syscall(num: u64, ptr: u64, len: u64) -> u64 {
         }
         SYS_EXIT => {
             crate::println!("[user program exited]");
-            1 // Signal assembly to return to kernel
+            1 // signal to assembly: return to kernel
         }
         _ => u64::MAX,
     }
 }
 
-/// Get a raw function pointer to the syscall handler.
+/// raw function pointer to the syscall handler.
 pub fn handler_addr() -> u64 {
     syscall_handler_asm as *const () as u64
 }

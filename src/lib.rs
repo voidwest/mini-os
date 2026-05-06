@@ -7,7 +7,7 @@
 
 use bootloader::BootInfo;
 #[cfg(test)]
-use bootloader::{BootInfo, entry_point};
+use bootloader::entry_point;
 use core::panic::PanicInfo;
 
 extern crate alloc;
@@ -24,9 +24,7 @@ pub mod task;
 pub mod user;
 pub mod vga_buffer;
 
-/// A trait abstracting over testable entities (functions or closures).
-///
-/// Used by the custom test framework to run test cases and report results.
+/// trait over testable functions or closures.
 pub trait Testable {
     fn run(&self) -> ();
 }
@@ -42,10 +40,8 @@ where
     }
 }
 
-/// Entry point for the custom test framework.
-///
-/// Runs all registered tests sequentially, printing results over serial,
-/// then exits QEMU with the appropriate exit code.
+/// custom test framework entry point. runs all registered tests, prints
+/// results over serial, exits qemu.
 pub fn test_runner(tests: &[&dyn Testable]) {
     serial_println!("Running {} tests", tests.len());
     for test in tests {
@@ -54,7 +50,7 @@ pub fn test_runner(tests: &[&dyn Testable]) {
     exit_qemu(QemuExitCode::Success);
 }
 
-/// Panic handler for test mode. Reports the failure over serial and exits QEMU.
+/// panic handler in test mode — reports failure over serial, exits qemu.
 pub fn test_panic_handler(info: &PanicInfo) -> ! {
     serial_println!("[Failed]\n");
     serial_println!("Error: {}\n", info);
@@ -78,9 +74,7 @@ fn panic(info: &PanicInfo) -> ! {
     test_panic_handler(info)
 }
 
-/// Exit codes understood by the `isa-debug-exit` QEMU device.
-///
-/// Written to port `0xf4` to signal test success or failure.
+/// exit codes for the `isa-debug-exit` qemu device, written to port `0xf4`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u32)]
 pub enum QemuExitCode {
@@ -88,7 +82,7 @@ pub enum QemuExitCode {
     Failed = 0x11,
 }
 
-/// Signal QEMU to exit via the `isa-debug-exit` device (port `0xf4`).
+/// signal qemu to exit via the isa-debug-exit device (port `0xf4`).
 pub fn exit_qemu(exit_code: QemuExitCode) {
     use x86_64::instructions::port::Port;
 
@@ -98,7 +92,7 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
     }
 }
 
-/// Initialize core kernel subsystems: GDT, IDT, PICs, and enable interrupts.
+/// init core subsystems: gdt, idt, pics, enable interrupts.
 pub fn init() {
     gdt::init();
     interrupts::init_idt();
@@ -106,18 +100,15 @@ pub fn init() {
     x86_64::instructions::interrupts::enable();
 }
 
-/// Halt the CPU in a loop. Used as the terminal state when there is nothing
-/// left to do and the kernel should idle forever.
+/// halt the cpu in a loop. terminal idle state.
 pub fn hlt_loop() -> ! {
     loop {
         x86_64::instructions::hlt();
     }
 }
 
-/// Full kernel initialization: GDT, IDT, PICs, paging, and heap.
-///
-/// This is the single entry point for setting up all kernel subsystems.
-/// Both the main kernel and integration tests should call this.
+/// full kernel init: gdt, idt, pics, paging, heap. single entry point for
+/// the main kernel and integration tests.
 pub fn init_all(boot_info: &'static BootInfo) {
     use x86_64::VirtAddr;
 

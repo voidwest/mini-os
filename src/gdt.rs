@@ -3,7 +3,7 @@ use x86_64::VirtAddr;
 use x86_64::structures::gdt::{Descriptor, GlobalDescriptorTable, SegmentSelector};
 use x86_64::structures::tss::TaskStateSegment;
 
-/// Index in the TSS interrupt stack table for the double-fault handler.
+/// tss ist index for the double-fault handler.
 pub const DOUBLE_FAULT_IST_INDEX: u16 = 0;
 
 lazy_static! {
@@ -56,7 +56,7 @@ impl Selectors {
     }
 }
 
-/// Load the GDT, reload the code segment selector, and load the TSS.
+/// load the gdt, reload cs, load the tss.
 pub fn init() {
     use x86_64::instructions::segmentation::{CS, Segment};
     use x86_64::instructions::tables::load_tss;
@@ -68,7 +68,7 @@ pub fn init() {
     }
 }
 
-/// Return the selectors for user-mode code and data segments.
+/// user code and data segment selectors.
 pub fn user_selectors() -> (SegmentSelector, SegmentSelector) {
     (GDT.1.user_code_selector(), GDT.1.user_data_selector())
 }

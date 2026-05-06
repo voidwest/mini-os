@@ -11,16 +11,14 @@ bootloader → gdt → idt → pics → paging → heap → shell
 | module | what it does |
 |--------|-------------|
 | `gdt` | segment descriptors, tss, user-mode segments |
-| `interrupts` | idt — exception handlers, irqs, syscall (int 0x80) |
+| `interrupts` | idt — exception handlers, irqs, timer, keyboard |
 | `memory` | page tables, frame allocator, page-flag ops |
 | `allocator` | heap with 3 strategies: bump, linked list, fixed-size block |
 | `vga_buffer` | 80×25 text mode, colored |
 | `serial` | uart 16550, test logging |
-| `shell` | repl with keyboard input and command dispatch |
+| `shell` | repl with 10 commands, keyboard input, history |
 | `task` | cooperative async executor, task spawning, wakers |
-| `ramdisk` | in-memory block device, read/write |
-| `syscall` | int 0x80 handler, dispatch |
-| `user` | ring 3 entry, embedded user program |
+| `ramdisk` | in-memory block device, read/write/hex decode |
 
 ## building
 

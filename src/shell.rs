@@ -10,15 +10,14 @@ lazy_static! {
     static ref INPUT_QUEUE: Mutex<Vec<char>> = Mutex::new(Vec::new());
 }
 
-/// Push a character into the shell input queue. Called from the keyboard
-/// interrupt handler.
+/// push a char into the input queue. called from the keyboard irq handler.
 pub fn push_char(c: char) {
     x86_64::instructions::interrupts::without_interrupts(|| {
         INPUT_QUEUE.lock().push(c);
     });
 }
 
-/// Pop a character from the input queue if one is available.
+/// pop a char from the input queue if available.
 fn read_char() -> Option<char> {
     x86_64::instructions::interrupts::without_interrupts(|| {
         let mut queue = INPUT_QUEUE.lock();
@@ -26,7 +25,7 @@ fn read_char() -> Option<char> {
     })
 }
 
-/// Read a line of input, echoing characters and handling backspace.
+/// read a line of input, echoing characters and handling backspace.
 fn read_line() -> String {
     let mut buf = String::new();
     loop {
@@ -37,7 +36,7 @@ fn read_line() -> String {
                     return buf;
                 }
                 '\x08' => {
-                    // Backspace: remove last character and echo backspace sequence.
+                    // backspace: remove last character, echo \b.
                     if !buf.is_empty() {
                         buf.pop();
                         crate::print!("\x08 \x08");
@@ -55,8 +54,7 @@ fn read_line() -> String {
     }
 }
 
-/// Dispatch a command line by splitting on whitespace and matching the first
-/// token against known commands.
+/// dispatch a command by splitting on whitespace and matching the first token.
 fn dispatch(line: &str) {
     let mut parts = line.split_whitespace();
     let cmd = match parts.next() {
@@ -77,7 +75,6 @@ fn dispatch(line: &str) {
             crate::println!("  rdread <offset> <len>  read from ramdisk");
             crate::println!("  rdwrite <offset> <hex> write bytes to ramdisk");
             crate::println!("  rdsize      print ramdisk size");
-            crate::println!("  usermode    run a program in ring 3");
         }
         "echo" => {
             let msg = parts.collect::<Vec<&str>>().join(" ");
@@ -94,13 +91,12 @@ fn dispatch(line: &str) {
         "rdread" => cmd_rdread(parts.next().unwrap_or(""), parts.next().unwrap_or("")),
         "rdwrite" => cmd_rdwrite(parts.next().unwrap_or(""), parts.next().unwrap_or("")),
         "rdsize" => cmd_rdsize(),
-        "usermode" => cmd_usermode(),
         "" => {}
         other => crate::println!("unknown command: {}\ntype 'help' for available commands", other),
     }
 }
 
-/// Demonstration: allocate and drop heap values to exercise the allocator.
+/// demo: allocate and drop heap values to exercise the allocator.
 fn cmd_alloc() {
     use alloc::boxed::Box;
     use alloc::vec::Vec;
@@ -116,14 +112,14 @@ fn cmd_alloc() {
     crate::println!("sum of elements: {}", v.iter().sum::<i32>());
 }
 
-/// Clear the VGA text-mode screen by scrolling all content off.
+/// clear the screen by scrolling content off.
 fn cmd_clear() {
     for _ in 0..25 {
         crate::println!();
     }
 }
 
-/// Print basic heap information.
+/// print basic heap info.
 fn cmd_meminfo() {
     crate::println!(
         "heap: start={:#x}, size={} KiB",
@@ -132,7 +128,7 @@ fn cmd_meminfo() {
     );
 }
 
-/// Spawn N async counter tasks that print a message after completing.
+/// spawn n async counter tasks that print a message after completing.
 fn cmd_spawn(args: &str) {
     let n: u32 = match args.parse().ok() {
         Some(n) if n > 0 => n,
@@ -150,15 +146,14 @@ fn cmd_spawn(args: &str) {
 
 async fn counter_task(id: u32) {
     crate::println!("[task {}] started", id);
-    // Yield a few times to simulate work.
+    // yield a few times to simulate work.
     for _ in 0..3 {
         yield_now().await;
     }
     crate::println!("[task {}] done", id);
 }
 
-/// A simple future that yields once, returning `Pending` and then `Ready` on
-/// the next poll.
+/// future that yields once — returns `Pending` then `Ready` on the next poll.
 struct YieldNow {
     yielded: bool,
 }
@@ -181,9 +176,7 @@ fn yield_now() -> YieldNow {
     YieldNow { yielded: false }
 }
 
-/// Run the executor in a busy loop until all tasks complete, or the user
-/// presses a key (Esc to abort). In practice, runs for a limited number of
-/// polls since tasks are short-lived.
+/// run the executor until all tasks complete or esc is pressed.
 fn cmd_exec() {
     let mut polls = 0;
     loop {
@@ -193,7 +186,7 @@ fn cmd_exec() {
         }
         polls += 1;
 
-        // Allow aborting by checking for an Escape key.
+        // allow aborting by checking for an escape key.
         if let Some('\x1b') = read_char_nonblock() {
             crate::println!("\naborted after {} polls", polls);
             break;
@@ -208,7 +201,7 @@ fn read_char_nonblock() -> Option<char> {
     })
 }
 
-/// Read from the ramdisk and print the contents as hex.
+/// read from the ramdisk and print the contents as hex.
 fn cmd_rdread(offset_str: &str, len_str: &str) {
     let offset: usize = match offset_str.parse() {
         Ok(v) => v,
@@ -240,7 +233,7 @@ fn cmd_rdread(offset_str: &str, len_str: &str) {
     }
 }
 
-/// Write hex bytes to the ramdisk.
+/// write hex bytes to the ramdisk.
 fn cmd_rdwrite(offset_str: &str, hex_str: &str) {
     let offset: usize = match offset_str.parse() {
         Ok(v) => v,
@@ -268,7 +261,7 @@ fn cmd_rdwrite(offset_str: &str, hex_str: &str) {
     }
 }
 
-/// Print ramdisk information.
+/// print ramdisk info.
 fn cmd_rdsize() {
     crate::println!(
         "ramdisk: {} bytes ({} KiB)",
@@ -277,7 +270,7 @@ fn cmd_rdsize() {
     );
 }
 
-/// Decode a hex string into bytes.
+/// decode a hex string into bytes.
 mod hex {
     pub fn decode(s: &str) -> Result<alloc::vec::Vec<u8>, ()> {
         let s = s.trim();
@@ -291,14 +284,7 @@ mod hex {
     }
 }
 
-/// Enter ring 3 (user mode) and run the embedded user program.
-/// Control returns to the shell when the program calls SYS_EXIT.
-fn cmd_usermode() {
-    crate::println!("entering user mode...");
-    unsafe { crate::user::enter_user_mode() };
-}
-
-/// Enter the shell's interactive read-eval-print loop.
+/// enter the interactive shell loop.
 pub fn run() -> ! {
     crate::println!("mini-os shell — type 'help' for commands");
     loop {

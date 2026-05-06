@@ -2,14 +2,14 @@ use alloc::vec::Vec;
 use lazy_static::lazy_static;
 use spin::Mutex;
 
-/// Size of the ramdisk in bytes (1 MiB).
+/// size of the ramdisk in bytes (1 MiB).
 const RAMDISK_SIZE: usize = 1024 * 1024;
 
 lazy_static! {
     static ref RAMDISK: Mutex<Ramdisk> = Mutex::new(Ramdisk::new(RAMDISK_SIZE));
 }
 
-/// A simple in-memory block device backed by a `Vec<u8>`.
+/// in-memory block device backed by a `Vec<u8>`.
 pub struct Ramdisk {
     data: Vec<u8>,
 }
@@ -40,18 +40,17 @@ impl Ramdisk {
     }
 }
 
-/// Read from the global ramdisk into the given buffer. Returns bytes read.
+/// read from the global ramdisk into a buffer. returns bytes read.
 pub fn read(offset: usize, buf: &mut [u8]) -> Result<usize, &'static str> {
     RAMDISK.lock().read(offset, buf)
 }
 
-/// Write the given buffer to the global ramdisk at the specified offset.
-/// Returns bytes written.
+/// write a buffer to the global ramdisk. returns bytes written.
 pub fn write(offset: usize, buf: &[u8]) -> Result<usize, &'static str> {
     RAMDISK.lock().write(offset, buf)
 }
 
-/// Return the size of the ramdisk in bytes.
+/// return the size of the ramdisk in bytes.
 pub fn size() -> usize {
     RAMDISK.lock().data.len()
 }

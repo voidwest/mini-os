@@ -4,9 +4,8 @@ struct ListNode {
 
 const BLOCK_SIZES: &[usize] = &[8, 16, 32, 64, 128, 256, 512, 1024, 2048];
 
-/// An allocator that maintains free-lists for fixed-size blocks (powers of two
-/// from 8 to 2048 bytes) and falls back to a linked-list allocator for larger
-/// or misaligned requests.
+/// allocator with free-lists for fixed-size blocks (powers of two, 8–2048 bytes).
+/// falls back to a linked-list allocator for larger or misaligned requests.
 pub struct FixedSizeBlockAllocator {
     list_heads: [Option<&'static mut ListNode>; BLOCK_SIZES.len()],
     fallback_allocator: linked_list_allocator::Heap,

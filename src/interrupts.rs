@@ -1,9 +1,9 @@
 use crate::hlt_loop;
-use crate::{print, println};
+use crate::println;
 use lazy_static::lazy_static;
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame, PageFaultErrorCode};
 
-/// Load the Interrupt Descriptor Table into the CPU's IDTR register.
+/// load the idt.
 pub fn init_idt() {
     IDT.load();
 }
@@ -39,16 +39,16 @@ fn test_breakpoint_exception() {
 use pic8259::ChainedPics;
 use spin;
 
-/// Primary PIC offset. IRQs 0–7 map to interrupts 32–39.
+/// primary pic offset (irqs 0–7 → ints 32–39).
 pub const PIC_1_OFFSET: u8 = 32;
-/// Secondary PIC offset. IRQs 8–15 map to interrupts 40–47.
+/// secondary pic offset (irqs 8–15 → ints 40–47).
 pub const PIC_2_OFFSET: u8 = PIC_1_OFFSET + 8;
 
-/// The cascaded pair of 8259 PICs used for hardware interrupt routing.
+/// cascaded 8259 pics for hardware interrupt routing.
 pub static PICS: spin::Mutex<ChainedPics> =
     spin::Mutex::new(unsafe { ChainedPics::new(PIC_1_OFFSET, PIC_2_OFFSET) });
 
-/// Hardware interrupt vector indices (offset relative to PIC base).
+/// hardware interrupt vector indices.
 #[derive(Debug, Clone, Copy)]
 #[repr(u8)]
 pub enum InterruptIndex {
@@ -79,7 +79,7 @@ lazy_static! {
         idt[InterruptIndex::Timer.as_usize()].set_handler_fn(timer_interrupt_handler);
         idt[InterruptIndex::Keyboard.as_usize()].set_handler_fn(keyboard_interrupt_handler);
 
-        // Syscall handler at interrupt vector 0x80, accessible from ring 3.
+        // syscall handler at int 0x80 (ring 3).
         unsafe {
             idt[0x80]
                 .set_handler_addr(x86_64::VirtAddr::new(crate::syscall::handler_addr()))
@@ -91,7 +91,6 @@ lazy_static! {
 }
 
 extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: InterruptStackFrame) {
-    print!(".");
     unsafe {
         PICS.lock().notify_end_of_interrupt(InterruptIndex::Timer.as_u8());
     }

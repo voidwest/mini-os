@@ -17,9 +17,7 @@ impl ListNode {
     }
 }
 
-/// A linked-list-based allocator that maintains a singly-linked list of free
-/// memory regions. Supports splitting and coalescing (via deallocation) of
-/// adjacent free blocks.
+/// linked-list allocator — singly-linked free list with splitting and coalescing.
 pub struct LinkedListAllocator {
     head: ListNode,
 }

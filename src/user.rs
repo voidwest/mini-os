@@ -6,12 +6,12 @@ global_asm!(
     ".global user_program",
     ".type user_program, @function",
     "user_program:",
-    // SYS_WRITE: print a message
+    // SYS_WRITE: print a message.
     "mov rax, 1",
     "lea rdi, [rip + user_msg]",
     "mov rsi, 22",
     "int 0x80",
-    // SYS_EXIT: terminate
+    // SYS_EXIT: terminate.
     "mov rax, 2",
     "int 0x80",
     "ud2",
@@ -23,30 +23,30 @@ unsafe extern "sysv64" {
     fn user_program();
 }
 
-/// Enter ring 3 (user mode) and execute the embedded user program.
+/// enter ring 3 (user mode) and execute the embedded user program.
 ///
-/// When the user program calls `SYS_EXIT`, control returns to `kernel_resume`.
+/// when the user program calls SYS_EXIT, control returns to `kernel_resume`.
 ///
 /// # Safety
-/// GDT, TSS, IDT, and paging must be initialized before calling.
+/// gdt, tss, idt, and paging must be initialized before calling.
 pub unsafe fn enter_user_mode() -> ! {
     let (user_code_sel, user_data_sel) = crate::gdt::user_selectors();
     let user_code_addr = VirtAddr::new(user_program as *const () as u64);
 
-    // Mark the page containing the user program as user-accessible.
+    // mark the page containing the user program as user-accessible.
     unsafe { crate::memory::mark_page_user(user_code_addr) };
 
-    // Allocate a user stack on the heap.
+    // allocate a user stack on the heap.
     let user_stack = alloc::vec![0u8; 4096];
     let user_stack_top = VirtAddr::new(user_stack.as_ptr() as u64 + 4096);
 
-    // Set up the exit context so that SYS_EXIT returns to kernel_resume.
+    // set up the exit context so that SYS_EXIT returns to kernel_resume.
     unsafe {
         let stack_top = core::ptr::addr_of!(KERNEL_EXIT_STACK) as u64 + 4096;
         crate::syscall::set_exit_context(stack_top, kernel_resume as *const () as u64);
     }
 
-    // Prevent the stack Vec from being dropped.
+    // prevent the stack Vec from being dropped.
     core::mem::forget(user_stack);
 
     unsafe {
@@ -67,10 +67,10 @@ pub unsafe fn enter_user_mode() -> ! {
     unreachable!();
 }
 
-/// Kernel stack used when returning from user mode via SYS_EXIT.
+/// kernel stack used when returning from user mode via SYS_EXIT.
 static mut KERNEL_EXIT_STACK: [u8; 4096] = [0; 4096];
 
-/// Resume point called by the syscall exit path. Re-enters the shell.
+/// resume point called by the syscall exit path. re-enters the shell.
 extern "sysv64" fn kernel_resume() -> ! {
     crate::shell::run();
 }

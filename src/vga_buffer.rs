@@ -2,7 +2,7 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 struct ColorCode(u8);
-/// The 16 standard VGA text-mode colors.
+/// the 16 standard vga text-mode colors.
 pub enum Color {
     Black = 0,
     Blue = 1,
@@ -44,9 +44,8 @@ struct Buffer {
     chars: [[Volatile<ScreenChar>; BUFFER_WIDTH]; BUFFER_HEIGHT],
 }
 
-/// A writer for the VGA text-mode buffer (80×25, 16 colors).
-///
-/// Writes characters at the bottom row and scrolls upward when the line is full.
+/// vga text-mode writer (80×25, 16 colors). writes at the bottom row and
+/// scrolls upward when the line is full.
 pub struct Writer {
     column_position: usize,
     color_code: ColorCode,
@@ -54,7 +53,7 @@ pub struct Writer {
 }
 
 impl Writer {
-    /// Write a single ASCII byte to the screen.
+    /// write a single ascii byte to the screen.
     pub fn write_byte(&mut self, byte: u8) {
         match byte {
             b'\n' => self.new_line(),
@@ -73,8 +72,7 @@ impl Writer {
         }
     }
 
-    /// Write a string to the screen, skipping non-printable characters and
-    /// rendering unknown bytes as `■` (0xfe).
+    /// write a string to the screen. non-printable bytes render as `■` (0xfe).
     pub fn write_string(&mut self, s: &str) {
         for byte in s.bytes() {
             match byte {

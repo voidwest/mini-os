@@ -7,7 +7,7 @@ use core::task::{Context, Poll, RawWaker, RawWakerVTable, Waker};
 
 static NEXT_TASK_ID: AtomicU64 = AtomicU64::new(0);
 
-/// An async task with a unique ID, wrapping a pinned future.
+/// async task with a unique id, wrapping a pinned future.
 pub struct Task {
     id: u64,
     future: Pin<Box<dyn Future<Output = ()> + Send>>,
@@ -27,8 +27,7 @@ impl Task {
     }
 }
 
-/// A simple cooperative async executor that polls tasks in a round-robin
-/// fashion. Tasks are re-enqueued when their waker is invoked.
+/// cooperative async executor — polls tasks round-robin, re-enqueues on wake.
 pub struct Executor {
     tasks: VecDeque<Task>,
     spawn_queue: VecDeque<Task>,
@@ -39,15 +38,15 @@ impl Executor {
         Executor { tasks: VecDeque::new(), spawn_queue: VecDeque::new() }
     }
 
-    /// Spawn a new async task.
+    /// spawn a new async task.
     pub fn spawn(&mut self, future: impl Future<Output = ()> + 'static + Send) {
         self.spawn_queue.push_back(Task::new(future));
     }
 
-    /// Poll tasks for a single iteration. Drains the spawn queue, then polls
-    /// one task. Returns `true` if there are pending tasks remaining.
+    /// poll tasks for one iteration. drains spawn queue, polls one task.
+    /// returns `true` if tasks remain pending.
     pub fn poll_once(&mut self) -> bool {
-        // Drain spawn queue.
+        // drain spawn queue.
         while let Some(task) = self.spawn_queue.pop_front() {
             self.tasks.push_back(task);
         }
@@ -74,17 +73,17 @@ impl Executor {
         !self.tasks.is_empty()
     }
 
-    /// Run the executor loop, polling each task until all are complete.
+    /// run until all tasks are complete.
     pub fn run(&mut self) {
         loop {
-            // Drain the spawn queue.
+        // drain the spawn queue.
             while let Some(task) = self.spawn_queue.pop_front() {
                 self.tasks.push_back(task);
             }
 
             if self.tasks.is_empty() {
-                // No more tasks — spin with hlt until new tasks arrive.
-                // We break and let the caller decide what to do, or just hlt.
+                // no more tasks — spin with hlt until new tasks arrive.
+                // we break and let the caller decide what to do, or just hlt.
                 x86_64::instructions::hlt();
                 continue;
             }
@@ -98,10 +97,10 @@ impl Executor {
                 }
                 Poll::Pending => {
                     if task.woken.load(Ordering::SeqCst) {
-                        // Task was woken while polling — re-queue at front.
+                        // task was woken while polling — re-queue at front.
                         self.tasks.push_front(task);
                     } else {
-                        // Not woken — re-queue at back for fairness.
+                        // not woken — re-queue at back for fairness.
                         self.tasks.push_back(task);
                     }
                 }
@@ -114,8 +113,7 @@ use lazy_static::lazy_static;
 use spin::Mutex;
 
 lazy_static! {
-    /// Global executor instance, shared between the main loop and the spawn
-    /// command in the shell.
+    /// global executor instance.
     pub static ref EXECUTOR: Mutex<Executor> = Mutex::new(Executor::new());
 }
 
@@ -125,7 +123,7 @@ fn task_waker(task_id: u64) -> Waker {
     }
     unsafe fn wake(data: *const ()) {
         let task_id = data as u64;
-        // Find the task in the executor and move it to the front.
+        // find the task in the executor and move it to the front.
         let mut executor = EXECUTOR.lock();
         if let Some(pos) = executor.tasks.iter().position(|t| t.id == task_id) {
             let task = executor.tasks.remove(pos).unwrap();
@@ -148,19 +146,19 @@ fn task_waker(task_id: u64) -> Waker {
     unsafe { Waker::from_raw(RawWaker::new(task_id as *const (), &WAKER_VTABLE)) }
 }
 
-/// Run the global executor, processing spawned tasks forever.
+/// run the global executor forever.
 pub fn run_executor() -> ! {
     loop {
         EXECUTOR.lock().run();
     }
 }
 
-/// Spawn a task on the global executor.
+/// spawn a task on the global executor.
 pub fn spawn(future: impl Future<Output = ()> + 'static + Send) {
     EXECUTOR.lock().spawn(future);
 }
 
-/// Poll the global executor for one iteration. Returns `true` if tasks remain.
+/// poll the global executor for one iteration. returns `true` if tasks remain.
 pub fn poll_once() -> bool {
     EXECUTOR.lock().poll_once()
 }
